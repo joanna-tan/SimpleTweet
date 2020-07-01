@@ -28,7 +28,7 @@ public class Tweet {
     //build the tweet from the fields in the json object
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
-        tweet.body = jsonObject.getString("text");
+        tweet.body = jsonObject.getString("full_text");
         tweet.createdAt = jsonObject.getString("created_at");
         //user needs to convert json object to a User.java object
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));

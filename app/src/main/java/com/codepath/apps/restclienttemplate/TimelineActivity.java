@@ -34,12 +34,13 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     TweetsAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+    // Instance of the progress action-view
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-
 
         client = TwitterApp.getRestClient(this);
 
@@ -70,6 +71,27 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
+    //TODO add loading in action bar
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present
@@ -83,7 +105,7 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
             //compose icon has been selected
-            //Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
 
             //Navigate to the compose activity
             Intent intent = new Intent(this, ComposeActivity.class);

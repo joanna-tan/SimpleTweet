@@ -52,6 +52,7 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("count", 25);
 		// since_id returns results with an ID greater than 2nd param (filter)
 		params.put("since_id", 1);
+		params.put("tweet_mode", "extended");
 		client.get(apiUrl, params, handler);
 	}
 

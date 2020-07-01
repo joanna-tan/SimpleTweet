@@ -12,6 +12,27 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
 
+<!--    <style name="MyToolbar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">-->
+<!--        <item name="background">@color/simple_blue</item>-->
+<!--    </style>-->
+
+    <style name="MyToolbar" parent="Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/MyToolbar</item>
+        <item name="title">@string/simple_tweet</item>
+        <item name="titleTextStyle">@style/MyActionBar.TitleTextStyle</item>
+        <item name="background">@color/twitter_blue</item>
+    </style>
+
+    <style name="MyActionBar.TitleTextStyle"
+        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/simple_white</item>
+    </style>
+
+
+    <color name="twitter_blue">#AB1DA1F2</color>
+    <color name="twitter_blue2">#ff1da1f2</color>
+    <color name="twitter_blue_30">#4d1da1f2</color>
+    <color name="simple_blue">#03A9F4</color>
+    <color name="simple_white">#FBFBFC</color>
 </resources>
