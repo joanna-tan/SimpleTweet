@@ -5,7 +5,9 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:background="@drawable/border"
+    android:layout_margin="0dp"
+    >
 
     <ImageView
         android:id="@+id/ivProfileImage"
@@ -13,8 +15,8 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:contentDescription="@string/profileimage"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -24,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="joannatan003" />
 
@@ -35,6 +37,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_toEndOf="@+id/tvScreenName"
         android:gravity="end"
         tools:text="Mon Apr 01 21:16:23 +0000 2014" />
@@ -47,6 +51,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="@tools:sample/lorem[55]" />
 
@@ -55,8 +61,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvBody"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_alignStart="@+id/tvBody"
+        android:layout_alignEnd="@+id/tvBody"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         tools:srcCompat="@tools:sample/avatars" />
