@@ -8,5 +8,8 @@
     <string name="profileimage">profileImage</string>
     <string name="tweet">Tweet</string>
     <string name="how_are_you_feeling">How are you feeling?</string>
+    <string name="chars_remaining">%1$d chars remaining</string>
+
+
 
 </resources>

@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +31,6 @@ public class ComposeActivity extends AppCompatActivity {
     TextView tvCharsRemaining;
 
     TwitterClient client;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +41,10 @@ public class ComposeActivity extends AppCompatActivity {
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
         tvCharsRemaining = findViewById(R.id.tvCharsRemaining);
+        final Resources res = getResources();
 
-        tvCharsRemaining.setText(MAX_TWEET_LENGTH + " chars remaining");
 
-
-        tvCharsRemaining.setText(MAX_TWEET_LENGTH + " chars remaining");
+        tvCharsRemaining.setText(String.format(res.getString(R.string.chars_remaining), MAX_TWEET_LENGTH));
 
         etCompose.addTextChangedListener(new TextWatcher() {
             @Override
@@ -58,7 +57,9 @@ public class ComposeActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                tvCharsRemaining.setText(MAX_TWEET_LENGTH - s.toString().length() + " chars remaining");
+                int charsRem = MAX_TWEET_LENGTH - s.toString().length();
+                tvCharsRemaining.setText(String.format(res.getString(R.string.chars_remaining), charsRem));
+                //tvCharsRemaining.setText(MAX_TWEET_LENGTH - s.toString().length() + " chars remaining");
             }
         });
 
@@ -75,7 +76,7 @@ public class ComposeActivity extends AppCompatActivity {
                 if (tweetContent.length() > MAX_TWEET_LENGTH) {
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet is too long", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(ComposeActivity.this, tweetContent, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ComposeActivity.this, "Published tweet!", Toast.LENGTH_SHORT).show();
 
                 // Make an API call to Twitter to publish the tweet
                 client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
