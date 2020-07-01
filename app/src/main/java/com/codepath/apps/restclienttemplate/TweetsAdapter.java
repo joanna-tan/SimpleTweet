@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.text.ParseException;
@@ -77,6 +80,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvBody;
         TextView tvScreenName;
         TextView tvTimestamp;
+        ImageView ivTweetMedia;
+
+        RelativeLayout content;
 
         public ViewHolder(@NonNull View itemView) {
             // itemView == to one item passed in e.g. one tweet
@@ -85,33 +91,63 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+
+            ivTweetMedia = itemView.findViewById(R.id.ivTweetMedia);
+
+            content = itemView.findViewById(R.id.content);
+
+
+            //itemView.setOnClickListener(this);
         }
 
-        public void bind(Tweet tweet) {
+        public void bind(final Tweet tweet) {
             tvBody.setText(tweet.body);
+
+            //tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
-            tvTimestamp.setText(getRelativeTimeAgo(tweet.createdAt));
-            //Log.i("adaptersss", "got the time");
+            tvTimestamp.setText(tweet.relativeTimeAgo);
+            //tvTimestamp.setText(getRelativeTimeAgo(tweet.createdAt));
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
 
-        }
-
-        // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
-        public String getRelativeTimeAgo(String rawJsonDate) {
-            String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-            SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-            sf.setLenient(true);
-
-            String relativeDate = "";
-            try {
-                long dateMillis = sf.parse(rawJsonDate).getTime();
-                relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                        System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if(tweet.mediaUrl != null){
+                Glide.with(context)
+                        .load(tweet.mediaUrl)
+                        .into(ivTweetMedia);
+                ivTweetMedia.setVisibility(View.VISIBLE);
+            }
+            else {
+                ivTweetMedia.setVisibility(View.GONE);
             }
 
-            return relativeDate;
+            content.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, TweetDetailsActivity.class);
+                    i.putExtra("tweet", Parcels.wrap(tweet));
+                    context.startActivity(i);
+                }
+            });
+
         }
+
+        /*@Override
+        public void onClick(View v) {
+            // gets the item position
+            int position = getAdapterPosition();
+
+            // make sure the position actually exists in the view
+            if (position != RecyclerView.NO_POSITION) {
+                // get the movie at the position (won't work if class is static)
+                Tweet tweet = tweets.get(position);
+                // create intent for the new activity
+                Intent intent = new Intent(context, TweetDetailsActivity.class);
+                // serialize the movie using parceler and use its short name as a key
+                intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                // finally, show the activity
+                context.startActivity(intent);
+
+            }
+
+        }*/
     }
 }

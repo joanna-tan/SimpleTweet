@@ -41,6 +41,8 @@
 <!--                <action android:name="android.intent.action.DEFAULT" />-->
 <!--            </intent-filter>-->
         </activity>
+        <activity android:name=".TweetDetailsActivity" >
+        </activity>
 
 
     </application>
