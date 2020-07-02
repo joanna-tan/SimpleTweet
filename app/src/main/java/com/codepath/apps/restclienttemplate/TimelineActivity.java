@@ -66,6 +66,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+                showProgressBar();
                 fetchTimelineAsync(0);
             }
         });
@@ -123,6 +124,7 @@ public class TimelineActivity extends AppCompatActivity {
         //requestCode defined by this class, resultCode defined by Java
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             //Get data from the intent(tweet)
+            assert data != null;
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
 
             //Update the RV with the tweet
@@ -152,6 +154,7 @@ public class TimelineActivity extends AppCompatActivity {
                     adapter.addAll(Tweet.fromJsonArray(jsonArray));
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
+                    hideProgressBar();
                     //adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -180,8 +183,6 @@ public class TimelineActivity extends AppCompatActivity {
                     Log.e(TAG, "Json exception", e);
                     e.printStackTrace();
                 }
-
-
             }
 
             @Override

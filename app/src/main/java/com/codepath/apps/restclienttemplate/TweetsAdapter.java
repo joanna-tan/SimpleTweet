@@ -2,10 +2,14 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.text.format.DateUtils;
-import android.util.Log;
+import android.text.Layout;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.style.ClickableSpan;
+import android.text.util.Linkify;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,6 +46,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
+
+        //View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
         //wrap the view in the ViewHolder class defined below
         return new ViewHolder(view);
     }
@@ -77,7 +83,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivProfileImage;
-        TextView tvBody;
+        LinkifyTextView tvBody;
+//        TextView tvBody;
         TextView tvScreenName;
         TextView tvTimestamp;
         ImageView ivTweetMedia;
@@ -96,12 +103,47 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
             content = itemView.findViewById(R.id.content);
 
-
             //itemView.setOnClickListener(this);
         }
 
+//        private void fixTextView(TextView tv) {
+//            SpannableString current = (SpannableString) tv.getText();
+//            URLSpan[] spans =
+//                    current.getSpans(0, current.length(), URLSpan.class);
+//
+//            for (URLSpan span : spans) {
+//                int start = current.getSpanStart(span);
+//                int end = current.getSpanEnd(span);
+//
+//                current.removeSpan(span);
+//                current.setSpan(new DefensiveURLSpan(span.getURL()), start, end,
+//                        0);
+//            }
+//        }
+//
+//        public class DefensiveURLSpan extends URLSpan {
+//            private String mUrl;
+//
+//            public DefensiveURLSpan(String url) {
+//                super(url);
+//                mUrl = url;
+//            }
+//
+//            @Override
+//            public void onClick(View widget) {
+//                widget.getContext();
+//                Intent i = new Intent(context, TweetDetailsActivity.class);
+//                i.putExtra("tweet", Parcels.wrap(tweet));
+//                context.startActivity(i);
+//                //openInWebView(widget.getContext(), mUrl); // intercept click event and do something.
+//                super.onClick(widget); // or it will do as it is.
+//            }
+//        }
+
         public void bind(final Tweet tweet) {
             tvBody.setText(tweet.body);
+
+//            fixTextView(tvBody);
 
             //tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
@@ -150,4 +192,5 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         }*/
     }
+
 }
