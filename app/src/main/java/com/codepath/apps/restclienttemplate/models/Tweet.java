@@ -24,6 +24,7 @@ public class Tweet {
     public String relativeTimeAgo;
     //public String mediaUrl;
     public String mediaUrl;
+    public long id;
 
     //build the tweet from the fields in the json object
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
@@ -32,6 +33,7 @@ public class Tweet {
         tweet.createdAt = jsonObject.getString("created_at");
         //user needs to convert json object to a User.java object
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        tweet.id = jsonObject.getLong("id");
         //tweet.media = Entities.fromJson(jsonObject.getJSONObject("entities"));
         tweet.relativeTimeAgo = getRelativeTimeAgo(tweet.createdAt);
 
@@ -41,8 +43,6 @@ public class Tweet {
                 tweet.mediaUrl = jsonObject.getJSONObject("extended_entities").getJSONArray("media").getJSONObject(0).getString("media_url_https");
             }
         }
-
-        Log.i("tweeeet", "added your media");
 
         return tweet;
     }

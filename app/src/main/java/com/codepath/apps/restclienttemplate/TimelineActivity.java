@@ -34,6 +34,7 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     TweetsAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
     // Instance of the progress action-view
     MenuItem miActionProgressItem;
 
@@ -46,14 +47,61 @@ public class TimelineActivity extends AppCompatActivity {
 
         //First find the recycler view
         rvTweets = findViewById(R.id.rvTweets);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         //Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
 
         //Recycler view setup: layout manager and the adapter
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
+
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, final RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Tweet lastTweet = tweets.get(tweets.size() - 1);
+                long lastId = lastTweet.id;
+                client.getExtendedHomeTimeline(lastId, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        JSONArray jsonArray = json.jsonArray;
+                        try {
+//                    adapter.clear();
+                            List<Tweet> moreTweets = Tweet.fromJsonArray(jsonArray);
+                            adapter.addAll(moreTweets);
+                            //adapter.notifyItemRangeInserted(tweets.size() - 1, 25);
+
+                            //adapter.notifyDataSetChanged();
+
+//                            view.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    adapter.notifyItemRangeInserted(tweets.size() - 1, 25);
+//
+//                                }
+//                            });
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Log.d("DEBUG", "Scrolling timeline error: " + throwable.toString());
+                    }
+                });
+
+                //loadNextDataFromApi(page, totalItemsCount, view);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
 
         populateHomeTimeline();
 
@@ -72,7 +120,6 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    //TODO add loading in action bar
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Store instance of the menu item containing progress
@@ -106,7 +153,7 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
             //compose icon has been selected
-            Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
 
             //Navigate to the compose activity
             Intent intent = new Intent(this, ComposeActivity.class);
@@ -190,5 +237,48 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.i(TAG, "onFailure" + response, throwable);
             }
         });
+    }
+
+    public void loadNextDataFromApi(int offset, int totalItemsCount, RecyclerView view) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        // Send the network request to fetch the updated data
+        // `client` here is an instance of Android Async HTTP
+        // getHomeTimeline is an example endpoint.
+//        Tweet lastTweet = tweets.get(totalItemsCount - 1);
+//        long lastId = lastTweet.id;
+//        client.getExtendedHomeTimeline(lastId, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Headers headers, JSON json) {
+//                JSONArray jsonArray = json.jsonArray;
+//                List<Tweet> moreTweets = new ArrayList<>();
+//                try {
+//                    int curSize = adapter.getItemCount();
+////                    adapter.clear();
+//                    moreTweets.addAll(Tweet.fromJsonArray(jsonArray));
+//                    adapter.notifyDataSetChanged();
+//
+//                    view.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adapter.notifyItemRangeInserted(curSize, tweets.size() - 1);
+//
+//                        }
+//                    })
+//
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+//                Log.d("DEBUG", "Fetch timeline error: " + throwable.toString());
+//            }
+//        });
     }
 }
