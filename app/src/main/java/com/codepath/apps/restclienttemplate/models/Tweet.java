@@ -20,9 +20,7 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
-    public Entities media;
     public String relativeTimeAgo;
-    //public String mediaUrl;
     public String mediaUrl;
     public long id;
 

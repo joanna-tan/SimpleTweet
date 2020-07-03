@@ -63,41 +63,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onLoadMore(int page, int totalItemsCount, final RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                Tweet lastTweet = tweets.get(tweets.size() - 1);
-                long lastId = lastTweet.id;
-                client.getExtendedHomeTimeline(lastId, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        JSONArray jsonArray = json.jsonArray;
-                        try {
-//                    adapter.clear();
-                            List<Tweet> moreTweets = Tweet.fromJsonArray(jsonArray);
-                            adapter.addAll(moreTweets);
-                            //adapter.notifyItemRangeInserted(tweets.size() - 1, 25);
-
-                            //adapter.notifyDataSetChanged();
-
-//                            view.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    adapter.notifyItemRangeInserted(tweets.size() - 1, 25);
-//
-//                                }
-//                            });
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                        Log.d("DEBUG", "Scrolling timeline error: " + throwable.toString());
-                    }
-                });
-
-                //loadNextDataFromApi(page, totalItemsCount, view);
+                loadNextDataFromApi();
             }
         };
         // Adds the scroll listener to RecyclerView
@@ -106,7 +72,7 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeline();
 
         //implement swipe to refresh feature
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer = findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -152,9 +118,6 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.compose) {
-            //compose icon has been selected
-            //Toast.makeText(this, "Compose!", Toast.LENGTH_SHORT).show();
-
             //Navigate to the compose activity
             Intent intent = new Intent(this, ComposeActivity.class);
             startActivityForResult(intent, REQUEST_CODE);
@@ -202,7 +165,6 @@ public class TimelineActivity extends AppCompatActivity {
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
                     hideProgressBar();
-                    //adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -239,7 +201,7 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    public void loadNextDataFromApi(int offset, int totalItemsCount, RecyclerView view) {
+    public void loadNextDataFromApi() {
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
@@ -248,37 +210,27 @@ public class TimelineActivity extends AppCompatActivity {
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
-//        Tweet lastTweet = tweets.get(totalItemsCount - 1);
-//        long lastId = lastTweet.id;
-//        client.getExtendedHomeTimeline(lastId, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Headers headers, JSON json) {
-//                JSONArray jsonArray = json.jsonArray;
-//                List<Tweet> moreTweets = new ArrayList<>();
-//                try {
-//                    int curSize = adapter.getItemCount();
-////                    adapter.clear();
-//                    moreTweets.addAll(Tweet.fromJsonArray(jsonArray));
-//                    adapter.notifyDataSetChanged();
-//
-//                    view.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            adapter.notifyItemRangeInserted(curSize, tweets.size() - 1);
-//
-//                        }
-//                    })
-//
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-//                Log.d("DEBUG", "Fetch timeline error: " + throwable.toString());
-//            }
-//        });
+        Tweet lastTweet = tweets.get(tweets.size() - 1);
+        long lastId = lastTweet.id;
+        client.getExtendedHomeTimeline(lastId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    List<Tweet> moreTweets = Tweet.fromJsonArray(jsonArray);
+                    adapter.addAll(moreTweets);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("DEBUG", "Scrolling timeline error: " + throwable.toString());
+                Toast.makeText(TimelineActivity.this, "Sorry, cannot retrieve more tweets at this time", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -29,19 +30,28 @@ public class ComposeActivity extends AppCompatActivity {
     EditText etCompose;
     Button btnTweet;
     TextView tvCharsRemaining;
+    boolean isReply;
 
     TwitterClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
+        etCompose = findViewById(R.id.etCompose);
+        final Resources res = getResources();
+
+        final Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("replyTo"));
+        if (tweet != null) {
+            etCompose.setText(String.format(res.getString(R.string.reply_to), new StringBuilder().append(tweet.user.screenName).append(" ").toString()));
+            isReply = true;
+        }
+
         client = TwitterApp.getRestClient(this);
 
-        etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
         tvCharsRemaining = findViewById(R.id.tvCharsRemaining);
-        final Resources res = getResources();
 
 
         tvCharsRemaining.setText(String.format(res.getString(R.string.chars_remaining), MAX_TWEET_LENGTH));
@@ -59,7 +69,6 @@ public class ComposeActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 int charsRem = MAX_TWEET_LENGTH - s.toString().length();
                 tvCharsRemaining.setText(String.format(res.getString(R.string.chars_remaining), charsRem));
-                //tvCharsRemaining.setText(MAX_TWEET_LENGTH - s.toString().length() + " chars remaining");
             }
         });
 
@@ -77,6 +86,40 @@ public class ComposeActivity extends AppCompatActivity {
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet is too long", Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(ComposeActivity.this, "Published tweet!", Toast.LENGTH_SHORT).show();
+
+                if (isReply) { //call reply_tweet
+                    assert tweet != null;
+                    client.replyTweet(tweet.id, tweetContent, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            Log.e(TAG, "onSuccess to reply to tweet");
+                            try {
+                                Tweet tweet = Tweet.fromJson(json.jsonObject);
+                                Log.i(TAG, "Published tweet says: " + tweet.body);
+                                //Intent intent = new Intent();
+
+                                Intent intent = new Intent(getApplicationContext(), TimelineActivity.class);
+
+                                intent.putExtra("tweet", Parcels.wrap(tweet));
+                                //set result code and bundle data for response
+                                setResult(RESULT_OK, intent);
+                                // closes the activity , pass data to parent
+                                startActivity(intent);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            Log.e(TAG, "onFailure to reply to tweet", throwable);
+
+                        }
+                    });
+
+                }
+
+                else {
 
                 // Make an API call to Twitter to publish the tweet
                 client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
@@ -102,7 +145,7 @@ public class ComposeActivity extends AppCompatActivity {
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "onFailure to publish tweet", throwable);
                     }
-                });
+                }); }
 
             }
         });

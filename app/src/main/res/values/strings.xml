@@ -13,6 +13,8 @@
     <string name="compose">Compose</string>
     <string name="loading">Loading…</string>
     <string name="tweet_media">tweet_media</string>
+    <string name="reply_button">reply_button</string>
+    <string name="reply_to">\@%s </string>
 
 
 </resources>

@@ -2,19 +2,13 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.Layout;
-import android.text.Selection;
-import android.text.Spannable;
-import android.text.style.ClickableSpan;
-import android.text.util.Linkify;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,14 +17,10 @@ import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
     Context context;
     List<Tweet> tweets;
@@ -39,15 +29,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         this.context = context;
         this.tweets = tweets;
     }
-// Pass in the context and list of tweets
-
+    // Pass in the context and list of tweets
     // For each row, inflate the layout
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
-
-        //View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
         //wrap the view in the ViewHolder class defined below
         return new ViewHolder(view);
     }
@@ -67,6 +54,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return tweets.size();
     }
 
+
     // Clean all elements of the recycler
     public void clear() {
         tweets.clear();
@@ -79,87 +67,55 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    // Define a viewholder
+    // Define a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivProfileImage;
         LinkifyTextView tvBody;
-//        TextView tvBody;
         TextView tvScreenName;
         TextView tvTimestamp;
         ImageView ivTweetMedia;
+        ImageView ivReply;
 
         RelativeLayout content;
 
         public ViewHolder(@NonNull View itemView) {
-            // itemView == to one item passed in e.g. one tweet
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            ivReply = itemView.findViewById(R.id.ivReply);
 
             ivTweetMedia = itemView.findViewById(R.id.ivTweetMedia);
 
             content = itemView.findViewById(R.id.content);
-
-            //itemView.setOnClickListener(this);
         }
-
-//        private void fixTextView(TextView tv) {
-//            SpannableString current = (SpannableString) tv.getText();
-//            URLSpan[] spans =
-//                    current.getSpans(0, current.length(), URLSpan.class);
-//
-//            for (URLSpan span : spans) {
-//                int start = current.getSpanStart(span);
-//                int end = current.getSpanEnd(span);
-//
-//                current.removeSpan(span);
-//                current.setSpan(new DefensiveURLSpan(span.getURL()), start, end,
-//                        0);
-//            }
-//        }
-//
-//        public class DefensiveURLSpan extends URLSpan {
-//            private String mUrl;
-//
-//            public DefensiveURLSpan(String url) {
-//                super(url);
-//                mUrl = url;
-//            }
-//
-//            @Override
-//            public void onClick(View widget) {
-//                widget.getContext();
-//                Intent i = new Intent(context, TweetDetailsActivity.class);
-//                i.putExtra("tweet", Parcels.wrap(tweet));
-//                context.startActivity(i);
-//                //openInWebView(widget.getContext(), mUrl); // intercept click event and do something.
-//                super.onClick(widget); // or it will do as it is.
-//            }
-//        }
 
         public void bind(final Tweet tweet) {
             tvBody.setText(tweet.body);
 
-//            fixTextView(tvBody);
-
-            //tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
             tvTimestamp.setText(tweet.relativeTimeAgo);
-            //tvTimestamp.setText(getRelativeTimeAgo(tweet.createdAt));
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
 
-            if(tweet.mediaUrl != null){
+            if (tweet.mediaUrl != null) {
                 Glide.with(context)
                         .load(tweet.mediaUrl)
                         .into(ivTweetMedia);
                 ivTweetMedia.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 ivTweetMedia.setVisibility(View.GONE);
             }
+
+            ivReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, ComposeActivity.class);
+                    i.putExtra("replyTo", Parcels.wrap(tweet));
+                    context.startActivity(i);
+                }
+            });
 
             content.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,25 +128,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         }
 
-        /*@Override
-        public void onClick(View v) {
-            // gets the item position
-            int position = getAdapterPosition();
-
-            // make sure the position actually exists in the view
-            if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position (won't work if class is static)
-                Tweet tweet = tweets.get(position);
-                // create intent for the new activity
-                Intent intent = new Intent(context, TweetDetailsActivity.class);
-                // serialize the movie using parceler and use its short name as a key
-                intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                // finally, show the activity
-                context.startActivity(intent);
-
-            }
-
-        }*/
     }
 
 }

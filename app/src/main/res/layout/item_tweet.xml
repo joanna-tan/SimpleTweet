@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border"
     android:layout_margin="0dp"
-    >
+    android:background="@drawable/border">
 
     <ImageView
         android:id="@+id/ivProfileImage"
@@ -54,10 +54,9 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
-        tools:text="@tools:sample/lorem[55]"
         android:autoLink="all"
         android:linksClickable="true"
-        />
+        tools:text="@tools:sample/lorem[55]" />
 
     <ImageView
         android:id="@+id/ivTweetMedia"
@@ -71,9 +70,21 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tweet_media"
         android:scaleType="fitXY"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@string/tweet_media" />
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/ivReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivTweetMedia"
+        android:layout_alignStart="@+id/ivTweetMedia"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        app:srcCompat="@drawable/ic_baseline_chat_bubble_outline_24"
+        android:contentDescription="@string/reply_button" />
 
 
 </RelativeLayout>
