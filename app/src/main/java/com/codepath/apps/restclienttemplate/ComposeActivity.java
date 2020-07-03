@@ -44,7 +44,7 @@ public class ComposeActivity extends AppCompatActivity {
 
         final Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("replyTo"));
         if (tweet != null) {
-            etCompose.setText(String.format(res.getString(R.string.reply_to), new StringBuilder().append(tweet.user.screenName).append(" ").toString()));
+            etCompose.setText(String.format(res.getString(R.string.reply_to), String.format("%s ", tweet.user.screenName)));
             isReply = true;
         }
 

@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.codepath.apps.restclienttemplate.models.Tweet;
 import org.parceler.Parcels;
 
 public class TweetDetailsActivity extends AppCompatActivity {
+    private final int REQUEST_CODE = 20;
 
     Tweet tweet;
 
@@ -22,6 +24,7 @@ public class TweetDetailsActivity extends AppCompatActivity {
     TextView tvScreenName;
     TextView tvTimestamp;
     ImageView ivMediaImage;
+    ImageView ivReply;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class TweetDetailsActivity extends AppCompatActivity {
         tvScreenName = findViewById(R.id.tvScreenName);
         tvTimestamp = findViewById(R.id.tvTimestamp);
         ivMediaImage = findViewById(R.id.ivMediaImage);
+        ivReply = findViewById(R.id.ivReply);
 
         tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
         Glide.with(getApplicationContext()).load(tweet.user.profileImageUrl).into(ivProfileImage);
@@ -50,6 +54,15 @@ public class TweetDetailsActivity extends AppCompatActivity {
         tvBody.setText(tweet.body);
         tvScreenName.setText(tweet.user.screenName);
         tvTimestamp.setText(tweet.relativeTimeAgo);
+
+        ivReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ComposeActivity.class);
+                intent.putExtra("replyTo", Parcels.wrap(tweet));
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
 
     }
 }
