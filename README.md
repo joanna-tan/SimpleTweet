@@ -25,8 +25,8 @@ The following **stretch** features are implemented:
 
 * [X] User is using **"Twitter branded" colors and styles**
 * [X] User sees an **indeterminate progress indicator** when any background or network task is happening
-* [ ] User can **select "reply" from detail view to respond to a tweet**
-  * [ ] User that wrote the original tweet is **automatically "@" replied in compose**
+* [X] User can **select "reply" from detail view to respond to a tweet**
+  * [X] User that wrote the original tweet is **automatically "@" replied in compose**
 * [X] User can tap a tweet to **open a detailed tweet view**
   * [ ] User can **take favorite (and unfavorite) or reweet** actions on a tweet
 * [X] User can view more tweets as they scroll with infinite pagination
@@ -46,9 +46,9 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
+GIF created with [Kap](https://getkap.co/).
 
 ## Notes
 
